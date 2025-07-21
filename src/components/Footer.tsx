@@ -10,9 +10,11 @@ const Footer = () => {
         <div className="grid md:grid-cols-3 gap-12">
           <div>
             <div className="mb-6">
-              <span className="text-3xl font-bold">
-                Protec <span className="text-primary-400">Solutions</span>
-              </span>
+              <img 
+                src="/Protec Solutions Logo white.png" 
+                alt="Protec Solutions logo"
+                className="w-[140px] h-auto"
+              />
             </div>
             <p className="text-slate-300 leading-relaxed mb-6">
               Delivering digital solutions that drive impact across Perth and beyond. 
