@@ -29,7 +29,7 @@ const Hero = () => {
             </h1>
             
             <p className="text-xl md:text-2xl text-slate-500 font-light max-w-2xl mx-auto">
-              Perth-based experts in strategy, design, and delivery.
+              Experts in strategy, solution design, and delivery.
             </p>
           </div>
           
