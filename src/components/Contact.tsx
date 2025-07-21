@@ -120,9 +120,9 @@ const Contact = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className={`w-full px-4 py-4 rounded-xl border-2 transition-all duration-300 ${
-                    errors.name ? 'border-red-300 focus:border-red-500' : 'border-slate-200 focus:border-primary-500'
-                  } focus:ring-0 bg-slate-50 focus:bg-white`}
+                  className={`w-full px-4 py-4 rounded-xl border-2 transition-all duration-300 focus:outline-none ${
+                    errors.name ? 'border-red-300 focus:border-red-500 focus:shadow-[0_0_0_3px_rgba(239,68,68,0.1)]' : 'border-slate-200 focus:border-custom-blue focus:shadow-[0_0_0_3px_rgba(51,102,255,0.1)]'
+                  } bg-slate-50 focus:bg-white`}
                   placeholder="Your full name"
                 />
                 {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
@@ -141,9 +141,9 @@ const Contact = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`w-full px-4 py-4 rounded-xl border-2 transition-all duration-300 ${
-                    errors.email ? 'border-red-300 focus:border-red-500' : 'border-slate-200 focus:border-primary-500'
-                  } focus:ring-0 bg-slate-50 focus:bg-white`}
+                  className={`w-full px-4 py-4 rounded-xl border-2 transition-all duration-300 focus:outline-none ${
+                    errors.email ? 'border-red-300 focus:border-red-500 focus:shadow-[0_0_0_3px_rgba(239,68,68,0.1)]' : 'border-slate-200 focus:border-custom-blue focus:shadow-[0_0_0_3px_rgba(51,102,255,0.1)]'
+                  } bg-slate-50 focus:bg-white`}
                   placeholder="your.email@company.com"
                 />
                 {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
@@ -162,7 +162,7 @@ const Contact = () => {
               name="organisation"
               value={formData.organisation}
               onChange={handleChange}
-              className="w-full px-4 py-4 rounded-xl border-2 border-slate-200 focus:border-primary-500 focus:ring-0 bg-slate-50 focus:bg-white transition-all duration-300"
+              className="w-full px-4 py-4 rounded-xl border-2 border-slate-200 focus:border-custom-blue focus:outline-none focus:shadow-[0_0_0_3px_rgba(51,102,255,0.1)] bg-slate-50 focus:bg-white transition-all duration-300"
               placeholder="Your company or organisation"
             />
           </div>
@@ -179,9 +179,9 @@ const Contact = () => {
                 rows={6}
                 value={formData.message}
                 onChange={handleChange}
-                className={`w-full px-4 py-4 rounded-xl border-2 transition-all duration-300 resize-none ${
-                  errors.message ? 'border-red-300 focus:border-red-500' : 'border-slate-200 focus:border-primary-500'
-                } focus:ring-0 bg-slate-50 focus:bg-white`}
+                className={`w-full px-4 py-4 rounded-xl border-2 transition-all duration-300 resize-none focus:outline-none ${
+                  errors.message ? 'border-red-300 focus:border-red-500 focus:shadow-[0_0_0_3px_rgba(239,68,68,0.1)]' : 'border-slate-200 focus:border-custom-blue focus:shadow-[0_0_0_3px_rgba(51,102,255,0.1)]'
+                } bg-slate-50 focus:bg-white`}
                 placeholder="Tell us about your project, goals, and how we can help..."
               ></textarea>
               {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message}</p>}
