@@ -42,20 +42,30 @@ const Contact = () => {
     
     if (!validateForm()) return;
     
+    // Let Netlify handle the form submission
+    const form = e.target as HTMLFormElement;
+    
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      setIsSubmitted(true);
-      console.log('Form submitted:', formData);
-      
-      // Reset form after 3 seconds
-      setTimeout(() => {
-        setIsSubmitted(false);
-        setFormData({ name: '', email: '', organisation: '', message: '' });
-      }, 3000);
-    }, 1000);
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(new FormData(form) as any).toString(),
+    })
+      .then(() => {
+        setIsLoading(false);
+        setIsSubmitted(true);
+        
+        // Reset form after 3 seconds
+        setTimeout(() => {
+          setIsSubmitted(false);
+          setFormData({ name: '', email: '', organisation: '', message: '' });
+        }, 3000);
+      })
+      .catch(() => {
+        setIsLoading(false);
+        alert('There was an error submitting the form. Please try again.');
+      });
   };
 
   if (isSubmitted) {
@@ -87,7 +97,16 @@ const Contact = () => {
           </p>
         </div>
         
-        <form onSubmit={handleSubmit} className="bg-white p-8 lg:p-10 rounded-2xl shadow-xl border border-slate-100 space-y-8 animate-fade-in-up" style={{animationDelay: '0.4s'}}>
+        <form 
+          name="contact" 
+          method="POST" 
+          data-netlify="true"
+          onSubmit={handleSubmit} 
+          className="bg-white p-8 lg:p-10 rounded-2xl shadow-xl border border-slate-100 space-y-8 animate-fade-in-up" 
+          style={{animationDelay: '0.4s'}}
+        >
+          <input type="hidden" name="form-name" value="contact" />
+          
           <div className="grid md:grid-cols-2 gap-8">
             <div>
               <label htmlFor="name" className="block text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
