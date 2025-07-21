@@ -44,11 +44,20 @@ const Navigation = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex-shrink-0">
-              <button onClick={scrollToTop} className="group">
-                <span className="text-xl font-bold text-slate-900 group-hover:scale-105 transition-transform duration-200">
-                  Protec <span className="text-primary-500">Solutions</span>
-                </span>
-              </button>
+              <a 
+                href="/" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToTop();
+                }}
+                className="group flex items-center"
+              >
+                <img 
+                  src="/Protec Solutions Logo copy.png" 
+                  alt="Protec Solutions logo"
+                  className="w-[140px] h-auto group-hover:scale-105 transition-transform duration-200"
+                />
+              </a>
             </div>
             
             <div className="hidden md:block">
