@@ -13,7 +13,7 @@ const Footer = () => {
               <img 
                 src="/Protec Solutions Logo white.png" 
                 alt="Protec Solutions logo"
-                className="w-[140px] h-auto"
+                className="w-[180px] h-auto"
               />
             </div>
             <p className="text-slate-300 leading-relaxed mb-6">
