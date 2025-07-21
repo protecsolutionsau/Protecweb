@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import Navigation from './components/Navigation';
 import Hero from './components/Hero';
 import About from './components/About';
+import Certifications from './components/Certifications';
 import HowWeWork from './components/HowWeWork';
 import WhatWeDo from './components/WhatWeDo';
 import Contact from './components/Contact';
@@ -40,6 +41,7 @@ function App() {
           <Hero />
         </div>
         <About />
+        <Certifications />
         <HowWeWork />
         <WhatWeDo />
         <Contact />
