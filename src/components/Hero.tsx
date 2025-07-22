@@ -31,8 +31,8 @@ const Hero = () => {
         entries.forEach(entry => {
           if (entry.isIntersecting && !hasAnimated) {
             setHasAnimated(true);
-            setTimeout(() => animateCounter('certifications', 100), 300);
-            setTimeout(() => animateCounter('clients', 50), 600);
+            setTimeout(() => animateCounter('certifications', 50), 300);
+            setTimeout(() => animateCounter('clients', 25), 600);
             setTimeout(() => animateCounter('experience', 20), 900);
           }
         });
