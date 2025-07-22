@@ -55,7 +55,7 @@ const Navigation = () => {
                 <img 
                   src="/Protec Solutions Logo copy.png" 
                   alt="Protec Solutions logo"
-                  className="w-[160px] h-auto group-hover:scale-105 transition-transform duration-200"
+                  className="w-[120px] md:w-[160px] h-auto group-hover:scale-105 transition-transform duration-200"
                 />
               </a>
             </div>

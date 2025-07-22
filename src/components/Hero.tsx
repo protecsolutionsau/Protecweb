@@ -60,24 +60,24 @@ const Hero = () => {
   };
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-gray-50 px-4 relative overflow-hidden">
+    <section className="min-h-screen flex items-center justify-center bg-gray-50 px-4 pt-20 md:pt-0 relative overflow-hidden">
       {/* Subtle Background Glow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-gradient-to-r from-primary-100/20 via-primary-50/10 to-transparent rounded-full filter blur-3xl opacity-60"></div>
       </div>
 
-      <div className="max-w-4xl mx-auto relative z-10 text-center">
+      <div className="max-w-4xl mx-auto relative z-10 text-center mt-4 md:mt-0">
         <div className="space-y-12">
           
           {/* Main Headline */}
           <div className="space-y-6 animate-fade-in-up">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-slate-900 leading-[1.1] tracking-tight">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-slate-900 leading-[1.1] tracking-tight px-2 md:px-0">
               Smarter Digital Solutions.
               <br />
               <span className="text-primary-500">Built for Impact.</span>
             </h1>
             
-            <p className="text-xl md:text-2xl text-slate-500 font-light max-w-2xl mx-auto">
+            <p className="text-lg md:text-2xl text-slate-500 font-light max-w-2xl mx-auto px-4 md:px-0">
               Experts in strategy, solution design and delivery.
             </p>
           </div>
