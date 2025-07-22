@@ -103,28 +103,28 @@ const Hero = () => {
 
           {/* Trust Indicators */}
           <div ref={statsRef} className="pt-16 animate-fade-in-up" style={{animationDelay: '0.6s'}}>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div className="flex flex-wrap justify-center gap-4 md:grid md:grid-cols-3 md:gap-8 max-w-4xl mx-auto">
               <div className="text-center p-6 bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/50 shadow-lg">
-                <div className="text-4xl md:text-5xl font-bold text-slate-900 mb-2">
+                <div className="text-3xl md:text-5xl font-bold text-slate-900 mb-2 min-w-[100px]">
                   {counters.certifications}+
                 </div>
-                <div className="text-slate-600 font-medium">
+                <div className="text-slate-600 font-medium text-sm md:text-base">
                   Certifications
                 </div>
               </div>
               <div className="text-center p-6 bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/50 shadow-lg">
-                <div className="text-4xl md:text-5xl font-bold text-slate-900 mb-2">
+                <div className="text-3xl md:text-5xl font-bold text-slate-900 mb-2 min-w-[100px]">
                   {counters.clients}+
                 </div>
-                <div className="text-slate-600 font-medium">
+                <div className="text-slate-600 font-medium text-sm md:text-base">
                   Partners & Clients
                 </div>
               </div>
               <div className="text-center p-6 bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/50 shadow-lg">
-                <div className="text-4xl md:text-5xl font-bold text-slate-900 mb-2">
+                <div className="text-3xl md:text-5xl font-bold text-slate-900 mb-2 min-w-[100px]">
                   {counters.experience}+
                 </div>
-                <div className="text-slate-600 font-medium">
+                <div className="text-slate-600 font-medium text-sm md:text-base">
                   Years of Experience
                 </div>
               </div>
