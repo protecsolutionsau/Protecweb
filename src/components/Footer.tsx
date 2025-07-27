@@ -27,11 +27,11 @@ const Footer = () => {
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-primary-400 flex-shrink-0" />
-                <span className="text-slate-300">support@protecsolutions.com.au</span>
+                <span className="text-slate-300">contactus@protecsolutions.com.au</span>
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-primary-400 flex-shrink-0" />
-                <span className="text-slate-300">+61 420 714 613</span>
+                <span className="text-slate-300">+61 459 469 120</span>
               </div>
               <div className="flex items-center gap-3">
                 <MapPin className="w-5 h-5 text-primary-400 flex-shrink-0" />
