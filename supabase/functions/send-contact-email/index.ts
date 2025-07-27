@@ -14,8 +14,11 @@ const corsHeaders = {
 };
 
 Deno.serve(async (req: Request) => {
+  console.log('Received request:', req.method, req.url);
+
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
+    console.log('Handling CORS preflight request');
     return new Response(null, {
       status: 200,
       headers: corsHeaders,
@@ -25,6 +28,7 @@ Deno.serve(async (req: Request) => {
   try {
     // Only allow POST requests
     if (req.method !== 'POST') {
+      console.log('Method not allowed:', req.method);
       return new Response(
         JSON.stringify({ error: 'Method not allowed' }),
         {
@@ -35,9 +39,15 @@ Deno.serve(async (req: Request) => {
     }
 
     // Parse request body with error handling
-    let body: ContactFormData;
+    let requestData: ContactFormData;
     try {
-      body = await req.json();
+      requestData = await req.json();
+      console.log('Parsed request data:', { 
+        name: requestData.name, 
+        email: requestData.email, 
+        organisation: requestData.organisation,
+        messageLength: requestData.message?.length 
+      });
     } catch (parseError) {
       console.error('Request parsing error:', parseError);
       return new Response(
@@ -49,10 +59,11 @@ Deno.serve(async (req: Request) => {
       );
     }
     
-    const { name, email, organisation, message } = body;
+    const { name, email, organisation, message } = requestData;
 
-    // Validate required fields
+    // Basic validation
     if (!name || !email || !message) {
+      console.log('Validation failed - missing required fields:', { name: !!name, email: !!email, message: !!message });
       return new Response(
         JSON.stringify({ 
           error: 'Missing required fields: name, email, and message are required' 
@@ -67,6 +78,7 @@ Deno.serve(async (req: Request) => {
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
+      console.log('Invalid email format:', email);
       return new Response(
         JSON.stringify({ error: 'Invalid email format' }),
         {
@@ -76,7 +88,7 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // Initialize Resend
+    // Get Resend API key from environment
     const resendApiKey = Deno.env.get('RESEND_API_KEY');
     if (!resendApiKey) {
       console.error('RESEND_API_KEY environment variable not set');
@@ -92,17 +104,17 @@ Deno.serve(async (req: Request) => {
       );
     }
 
+    console.log('Initializing Resend with API key');
     const resend = new Resend(resendApiKey);
 
-    // Prepare styled HTML email content
-    const subject = 'New Message from Website Contact Form';
-    const htmlContent = `
+    // Create HTML email body
+    const htmlBody = `
       <!DOCTYPE html>
       <html lang="en">
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Contact Form Submission</title>
+        <title>New Contact Form Submission</title>
       </head>
       <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; line-height: 1.6;">
         <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -179,33 +191,19 @@ Deno.serve(async (req: Request) => {
       </html>
     `;
 
-    const textContent = `
-New Message from Website Contact Form
-
-Contact Information:
-Name: ${name}
-Email: ${email}
-${organisation ? `Organisation: ${organisation}` : ''}
-
-Message:
-${message}
-
----
-This message was sent from the Protec Solutions website contact form.
-Received: ${new Date().toLocaleString('en-AU', { timeZone: 'Australia/Perth' })}
-    `.trim();
-
-    // Send email
+    // Send email using Resend
+    console.log('Sending email to spkarthigeyan@gmail.com');
     let emailResponse;
     try {
       emailResponse = await resend.emails.send({
         from: 'website@protecsolutions.com.au',
         to: ['spkarthigeyan@gmail.com'],
-        subject: subject,
-        html: htmlContent,
-        text: textContent,
+        subject: 'New Message from Website Contact Form',
+        html: htmlBody,
         reply_to: email,
       });
+      
+      console.log('Email sent successfully:', emailResponse.data?.id);
     } catch (emailError) {
       console.error('Email sending error:', emailError);
       return new Response(
@@ -221,7 +219,7 @@ Received: ${new Date().toLocaleString('en-AU', { timeZone: 'Australia/Perth' })}
     }
 
     if (emailResponse.error) {
-      console.error('Resend error:', emailResponse.error);
+      console.error('Resend API error:', emailResponse.error);
       return new Response(
         JSON.stringify({ 
           error: 'Email delivery failed', 
@@ -235,6 +233,7 @@ Received: ${new Date().toLocaleString('en-AU', { timeZone: 'Australia/Perth' })}
     }
 
     // Success response
+    console.log('Contact form submission processed successfully');
     return new Response(
       JSON.stringify({ 
         success: true, 
@@ -248,7 +247,7 @@ Received: ${new Date().toLocaleString('en-AU', { timeZone: 'Australia/Perth' })}
     );
 
   } catch (error) {
-    console.error('Contact form error:', error);
+    console.error('Contact form processing error:', error);
     
     return new Response(
       JSON.stringify({ 
