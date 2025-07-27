@@ -50,10 +50,6 @@ const Contact = () => {
       const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
       
       if (!supabaseUrl || !supabaseAnonKey) {
-        console.error('Missing Supabase configuration:', { 
-          hasUrl: !!supabaseUrl, 
-          hasKey: !!supabaseAnonKey 
-        });
         throw new Error('Email service is currently unavailable. Please contact us directly at contactus@protecsolutions.com.au or call +61 459 469 120');
       }
       
@@ -76,8 +72,6 @@ const Contact = () => {
         try {
           result = JSON.parse(responseText);
         } catch (parseError) {
-          console.error('JSON Parse Error:', parseError);
-          console.error('Response Text:', responseText);
           throw new Error('Server communication error. Please try again or contact us directly.');
         }
       } else {
@@ -99,7 +93,6 @@ const Contact = () => {
 
     } catch (error) {
       setIsLoading(false);
-      console.error('Contact form error:', error);
       
       // More user-friendly error messages
       let errorMessage = 'Unable to send message. Please try again or contact us directly at contactus@protecsolutions.com.au';

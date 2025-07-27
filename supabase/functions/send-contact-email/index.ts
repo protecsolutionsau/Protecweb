@@ -14,11 +14,8 @@ const corsHeaders = {
 };
 
 Deno.serve(async (req: Request) => {
-  console.log('Received request:', req.method, req.url);
-
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    console.log('Handling CORS preflight request');
     return new Response(null, {
       status: 200,
       headers: corsHeaders,
@@ -28,7 +25,6 @@ Deno.serve(async (req: Request) => {
   try {
     // Only allow POST requests
     if (req.method !== 'POST') {
-      console.log('Method not allowed:', req.method);
       return new Response(
         JSON.stringify({ error: 'Method not allowed' }),
         {
@@ -42,14 +38,7 @@ Deno.serve(async (req: Request) => {
     let requestData: ContactFormData;
     try {
       requestData = await req.json();
-      console.log('Parsed request data:', { 
-        name: requestData.name, 
-        email: requestData.email, 
-        organisation: requestData.organisation,
-        messageLength: requestData.message?.length 
-      });
     } catch (parseError) {
-      console.error('Request parsing error:', parseError);
       return new Response(
         JSON.stringify({ error: 'Invalid request format' }),
         {
@@ -63,7 +52,6 @@ Deno.serve(async (req: Request) => {
 
     // Basic validation
     if (!name || !email || !message) {
-      console.log('Validation failed - missing required fields:', { name: !!name, email: !!email, message: !!message });
       return new Response(
         JSON.stringify({ 
           error: 'Missing required fields: name, email, and message are required' 
@@ -78,7 +66,6 @@ Deno.serve(async (req: Request) => {
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      console.log('Invalid email format:', email);
       return new Response(
         JSON.stringify({ error: 'Invalid email format' }),
         {
@@ -91,13 +78,9 @@ Deno.serve(async (req: Request) => {
     // Get Resend API key from environment
     const resendApiKey = Deno.env.get('RESEND_API_KEY');
     if (!resendApiKey) {
-      console.error('RESEND_API_KEY environment variable not set');
-      console.error('Available environment variables:', Object.keys(Deno.env.toObject()));
       return new Response(
         JSON.stringify({ 
-          error: 'Email service not configured', 
-          message: 'Email service not configured - missing RESEND_API_KEY environment variable',
-          debug: 'Please set RESEND_API_KEY in Supabase project settings'
+          error: 'Email service is currently unavailable. Please contact us directly at contactus@protecsolutions.com.au or call +61 459 469 120'
         }),
         {
           status: 500,
@@ -106,7 +89,6 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    console.log('Initializing Resend with API key:', resendApiKey ? 'Present' : 'Missing');
     const resend = new Resend(resendApiKey);
 
     // Create HTML email body
@@ -194,7 +176,6 @@ Deno.serve(async (req: Request) => {
     `;
 
     // Send email using Resend
-    console.log('Sending email to spkarthigeyan@gmail.com');
     let emailResponse;
     try {
       emailResponse = await resend.emails.send({
@@ -205,9 +186,7 @@ Deno.serve(async (req: Request) => {
         reply_to: email,
       });
       
-      console.log('Email sent successfully:', emailResponse.data?.id);
     } catch (emailError) {
-      console.error('Email sending error:', emailError);
       return new Response(
         JSON.stringify({ 
           error: 'Failed to send email', 
@@ -221,7 +200,6 @@ Deno.serve(async (req: Request) => {
     }
 
     if (emailResponse.error) {
-      console.error('Resend API error:', emailResponse.error);
       return new Response(
         JSON.stringify({ 
           error: 'Email delivery failed', 
@@ -235,7 +213,6 @@ Deno.serve(async (req: Request) => {
     }
 
     // Success response
-    console.log('Contact form submission processed successfully');
     return new Response(
       JSON.stringify({ 
         success: true, 
@@ -249,12 +226,10 @@ Deno.serve(async (req: Request) => {
     );
 
   } catch (error) {
-    console.error('Contact form processing error:', error);
-    
     return new Response(
       JSON.stringify({ 
         error: 'Internal server error', 
-        message: 'Something went wrong. Please try again or contact us directly at contactus@protecsolutions.com.au' 
+        message: 'Email service is currently unavailable. Please contact us directly at contactus@protecsolutions.com.au or call +61 459 469 120'
       }),
       {
         status: 500,
