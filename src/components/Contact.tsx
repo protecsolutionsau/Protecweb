@@ -102,7 +102,7 @@ const Contact = () => {
       if (error.message.includes('fetch')) {
         errorMessage = 'Network error. Please check your connection and try again.';
       } else if (error.message.includes('configuration')) {
-        errorMessage = 'Service configuration error. Please contact support.';
+        errorMessage = 'Email service not configured yet. Please contact us directly at contactus@protecsolutions.com.au';
       } else if (error.message) {
         errorMessage = error.message;
       }

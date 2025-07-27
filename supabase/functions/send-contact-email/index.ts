@@ -81,7 +81,10 @@ Deno.serve(async (req: Request) => {
     if (!resendApiKey) {
       console.error('RESEND_API_KEY environment variable not set');
       return new Response(
-        JSON.stringify({ error: 'Email service configuration error' }),
+        JSON.stringify({ 
+          error: 'Email service not configured', 
+          message: 'The RESEND_API_KEY environment variable is not set. Please configure Resend API key in Supabase settings.' 
+        }),
         {
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
