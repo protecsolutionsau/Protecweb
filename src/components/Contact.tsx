@@ -47,6 +47,11 @@ const Contact = () => {
     try {
       // Get Supabase URL from environment
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      
+      if (!supabaseUrl) {
+        throw new Error('Supabase configuration missing. Please check environment variables.');
+      }
+      
       const apiUrl = `${supabaseUrl}/functions/v1/send-contact-email`;
 
       const response = await fetch(apiUrl, {
@@ -58,10 +63,24 @@ const Contact = () => {
         body: JSON.stringify(formData),
       });
 
-      const result = await response.json();
+      // Check if response has content before parsing JSON
+      let result;
+      const responseText = await response.text();
+      
+      if (responseText) {
+        try {
+          result = JSON.parse(responseText);
+        } catch (parseError) {
+          console.error('JSON Parse Error:', parseError);
+          console.error('Response Text:', responseText);
+          throw new Error('Invalid response from server. Please try again.');
+        }
+      } else {
+        throw new Error('Empty response from server. Please try again.');
+      }
 
       if (!response.ok) {
-        throw new Error(result.error || 'Failed to send message');
+        throw new Error(result?.error || `Server error: ${response.status} ${response.statusText}`);
       }
 
       setIsLoading(false);
@@ -76,7 +95,19 @@ const Contact = () => {
     } catch (error) {
       setIsLoading(false);
       console.error('Contact form error:', error);
-      alert(`There was an error sending your message: ${error.message}. Please try again.`);
+      
+      // More user-friendly error messages
+      let errorMessage = 'There was an error sending your message. Please try again.';
+      
+      if (error.message.includes('fetch')) {
+        errorMessage = 'Network error. Please check your connection and try again.';
+      } else if (error.message.includes('configuration')) {
+        errorMessage = 'Service configuration error. Please contact support.';
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      alert(errorMessage);
     }
   };
 

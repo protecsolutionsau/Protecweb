@@ -34,8 +34,21 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // Parse request body
-    const body: ContactFormData = await req.json();
+    // Parse request body with error handling
+    let body: ContactFormData;
+    try {
+      body = await req.json();
+    } catch (parseError) {
+      console.error('Request parsing error:', parseError);
+      return new Response(
+        JSON.stringify({ error: 'Invalid request format' }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
+    
     const { name, email, organisation, message } = body;
 
     // Validate required fields
@@ -135,14 +148,29 @@ This message was sent from the Protec Solutions contact form.
     `.trim();
 
     // Send email
-    const emailResponse = await resend.emails.send({
-      from: 'Protec Solutions <noreply@protecsolutions.com.au>',
-      to: ['spkarthigeyan@gmail.com'],
-      subject: subject,
-      html: htmlContent,
-      text: textContent,
-      reply_to: email, // Allow easy reply to the sender
-    });
+    let emailResponse;
+    try {
+      emailResponse = await resend.emails.send({
+        from: 'Protec Solutions Contact <noreply@resend.dev>', // Use resend.dev domain for now
+        to: ['spkarthigeyan@gmail.com'],
+        subject: subject,
+        html: htmlContent,
+        text: textContent,
+        reply_to: email, // Allow easy reply to the sender
+      });
+    } catch (emailError) {
+      console.error('Email sending error:', emailError);
+      return new Response(
+        JSON.stringify({ 
+          error: 'Failed to send email', 
+          details: emailError.message 
+        }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
 
     if (emailResponse.error) {
       console.error('Resend error:', emailResponse.error);
