@@ -49,7 +49,7 @@ const Contact = () => {
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       
       if (!supabaseUrl) {
-        throw new Error('Supabase configuration missing. Please check environment variables.');
+        throw new Error('Website configuration error. Please contact us directly at contactus@protecsolutions.com.au');
       }
       
       const apiUrl = `${supabaseUrl}/functions/v1/send-contact-email`;
@@ -73,36 +73,34 @@ const Contact = () => {
         } catch (parseError) {
           console.error('JSON Parse Error:', parseError);
           console.error('Response Text:', responseText);
-          throw new Error('Invalid response from server. Please try again.');
+          throw new Error('Server communication error. Please try again or contact us directly.');
         }
       } else {
-        throw new Error('Empty response from server. Please try again.');
+        throw new Error('No response from server. Please try again or contact us directly.');
       }
 
       if (!response.ok) {
-        throw new Error(result?.error || `Server error: ${response.status} ${response.statusText}`);
+        throw new Error(result?.error || result?.message || `Server error (${response.status}). Please try again.`);
       }
 
       setIsLoading(false);
       setIsSubmitted(true);
       
-      // Reset form after 3 seconds
+      // Reset form after 4 seconds
       setTimeout(() => {
         setIsSubmitted(false);
         setFormData({ name: '', email: '', organisation: '', message: '' });
-      }, 3000);
+      }, 4000);
 
     } catch (error) {
       setIsLoading(false);
       console.error('Contact form error:', error);
       
       // More user-friendly error messages
-      let errorMessage = 'There was an error sending your message. Please try again.';
+      let errorMessage = 'Unable to send message. Please try again or contact us directly at contactus@protecsolutions.com.au';
       
       if (error.message.includes('fetch')) {
-        errorMessage = 'Network error. Please check your connection and try again.';
-      } else if (error.message.includes('configuration')) {
-        errorMessage = 'Email service not configured yet. Please contact us directly at contactus@protecsolutions.com.au';
+        errorMessage = 'Connection error. Please check your internet and try again.';
       } else if (error.message) {
         errorMessage = error.message;
       }
@@ -117,9 +115,9 @@ const Contact = () => {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center bg-white p-12 rounded-2xl shadow-xl border border-slate-100 animate-scale-in">
             <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-6 animate-bounce" />
-            <h2 className="text-3xl font-bold text-slate-900 mb-4 tracking-tight">Thank You!</h2>
+            <h2 className="text-3xl font-bold text-slate-900 mb-4 tracking-tight">Message Sent!</h2>
             <p className="text-xl text-slate-600 font-light">
-              We've received your message and will get back to you within 24 hours.
+              Thank you for contacting us! We'll respond within 24 hours.
             </p>
           </div>
         </div>

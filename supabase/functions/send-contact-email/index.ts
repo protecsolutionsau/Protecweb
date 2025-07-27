@@ -83,7 +83,7 @@ Deno.serve(async (req: Request) => {
       return new Response(
         JSON.stringify({ 
           error: 'Email service not configured', 
-          message: 'The RESEND_API_KEY environment variable is not set. Please configure Resend API key in Supabase settings.' 
+          message: 'Please contact us directly at contactus@protecsolutions.com.au' 
         }),
         {
           status: 500,
@@ -94,51 +94,95 @@ Deno.serve(async (req: Request) => {
 
     const resend = new Resend(resendApiKey);
 
-    // Prepare email content
-    const subject = `New Contact Form Submission from ${name}`;
+    // Prepare styled HTML email content
+    const subject = 'New Message from Website Contact Form';
     const htmlContent = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb; border-radius: 8px;">
-        <div style="background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-          <h2 style="color: #1f2937; margin-bottom: 20px; border-bottom: 2px solid #3366ff; padding-bottom: 10px;">
-            New Contact Form Submission
-          </h2>
-          
-          <div style="margin-bottom: 15px;">
-            <strong style="color: #374151;">Name:</strong>
-            <span style="color: #6b7280; margin-left: 10px;">${name}</span>
-          </div>
-          
-          <div style="margin-bottom: 15px;">
-            <strong style="color: #374151;">Email:</strong>
-            <span style="color: #6b7280; margin-left: 10px;">${email}</span>
-          </div>
-          
-          ${organisation ? `
-          <div style="margin-bottom: 15px;">
-            <strong style="color: #374151;">Organisation:</strong>
-            <span style="color: #6b7280; margin-left: 10px;">${organisation}</span>
-          </div>
-          ` : ''}
-          
-          <div style="margin-bottom: 20px;">
-            <strong style="color: #374151;">Message:</strong>
-            <div style="background-color: #f3f4f6; padding: 15px; border-radius: 6px; margin-top: 10px; border-left: 4px solid #3366ff;">
-              <p style="color: #4b5563; line-height: 1.6; margin: 0; white-space: pre-wrap;">${message}</p>
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Contact Form Submission</title>
+      </head>
+      <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; line-height: 1.6;">
+        <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); overflow: hidden;">
+            
+            <!-- Header -->
+            <div style="background: linear-gradient(135deg, #3366ff 0%, #2952cc 100%); color: white; padding: 30px 40px; text-align: center;">
+              <h1 style="margin: 0; font-size: 24px; font-weight: 600;">New Website Contact</h1>
+              <p style="margin: 10px 0 0 0; opacity: 0.9; font-size: 16px;">Protec Solutions Contact Form</p>
             </div>
+            
+            <!-- Content -->
+            <div style="padding: 40px;">
+              
+              <!-- Contact Details -->
+              <div style="margin-bottom: 30px;">
+                <h2 style="color: #1f2937; margin: 0 0 20px 0; font-size: 20px; font-weight: 600; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;">Contact Information</h2>
+                
+                <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 15px;">
+                  <div style="flex: 1; min-width: 200px;">
+                    <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; border-left: 4px solid #3366ff;">
+                      <strong style="color: #374151; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Name</strong>
+                      <p style="margin: 5px 0 0 0; color: #1f2937; font-size: 16px; font-weight: 500;">${name}</p>
+                    </div>
+                  </div>
+                  
+                  <div style="flex: 1; min-width: 200px;">
+                    <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; border-left: 4px solid #10b981;">
+                      <strong style="color: #374151; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Email</strong>
+                      <p style="margin: 5px 0 0 0; color: #1f2937; font-size: 16px; font-weight: 500;">
+                        <a href="mailto:${email}" style="color: #3366ff; text-decoration: none;">${email}</a>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                ${organisation ? `
+                <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; border-left: 4px solid #f59e0b; margin-bottom: 15px;">
+                  <strong style="color: #374151; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Organisation</strong>
+                  <p style="margin: 5px 0 0 0; color: #1f2937; font-size: 16px; font-weight: 500;">${organisation}</p>
+                </div>
+                ` : ''}
+              </div>
+              
+              <!-- Message -->
+              <div style="margin-bottom: 30px;">
+                <h2 style="color: #1f2937; margin: 0 0 15px 0; font-size: 20px; font-weight: 600; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;">Message</h2>
+                <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; border-left: 4px solid #ef4444;">
+                  <p style="color: #374151; margin: 0; font-size: 16px; line-height: 1.6; white-space: pre-wrap;">${message}</p>
+                </div>
+              </div>
+              
+              <!-- Action Button -->
+              <div style="text-align: center; margin-top: 30px;">
+                <a href="mailto:${email}?subject=Re: Website Contact Form" 
+                   style="display: inline-block; background: linear-gradient(135deg, #3366ff 0%, #2952cc 100%); color: white; text-decoration: none; padding: 12px 30px; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 2px 4px rgba(51, 102, 255, 0.3);">
+                  Reply to ${name}
+                </a>
+              </div>
+              
+            </div>
+            
+            <!-- Footer -->
+            <div style="background-color: #f8fafc; padding: 20px 40px; border-top: 1px solid #e5e7eb; text-align: center;">
+              <p style="margin: 0; color: #6b7280; font-size: 14px;">
+                This message was sent from the <strong>Protec Solutions</strong> website contact form<br>
+                <span style="color: #9ca3af;">Received on ${new Date().toLocaleString('en-AU', { timeZone: 'Australia/Perth' })}</span>
+              </p>
+            </div>
+            
           </div>
-          
-          <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
-          
-          <p style="color: #9ca3af; font-size: 14px; margin: 0;">
-            This message was sent from the Protec Solutions contact form.
-          </p>
         </div>
-      </div>
+      </body>
+      </html>
     `;
 
     const textContent = `
-New Contact Form Submission
+New Message from Website Contact Form
 
+Contact Information:
 Name: ${name}
 Email: ${email}
 ${organisation ? `Organisation: ${organisation}` : ''}
@@ -147,19 +191,20 @@ Message:
 ${message}
 
 ---
-This message was sent from the Protec Solutions contact form.
+This message was sent from the Protec Solutions website contact form.
+Received: ${new Date().toLocaleString('en-AU', { timeZone: 'Australia/Perth' })}
     `.trim();
 
     // Send email
     let emailResponse;
     try {
       emailResponse = await resend.emails.send({
-        from: 'Protec Solutions Contact <noreply@resend.dev>', // Use resend.dev domain for now
+        from: 'website@protecsolutions.com.au',
         to: ['spkarthigeyan@gmail.com'],
         subject: subject,
         html: htmlContent,
         text: textContent,
-        reply_to: email, // Allow easy reply to the sender
+        reply_to: email,
       });
     } catch (emailError) {
       console.error('Email sending error:', emailError);
@@ -179,7 +224,7 @@ This message was sent from the Protec Solutions contact form.
       console.error('Resend error:', emailResponse.error);
       return new Response(
         JSON.stringify({ 
-          error: 'Failed to send email', 
+          error: 'Email delivery failed', 
           details: emailResponse.error 
         }),
         {
@@ -193,7 +238,7 @@ This message was sent from the Protec Solutions contact form.
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: 'Email sent successfully',
+        message: 'Your message has been sent successfully! We will get back to you within 24 hours.',
         emailId: emailResponse.data?.id 
       }),
       {
@@ -208,7 +253,7 @@ This message was sent from the Protec Solutions contact form.
     return new Response(
       JSON.stringify({ 
         error: 'Internal server error', 
-        message: error.message 
+        message: 'Something went wrong. Please try again or contact us directly at contactus@protecsolutions.com.au' 
       }),
       {
         status: 500,
