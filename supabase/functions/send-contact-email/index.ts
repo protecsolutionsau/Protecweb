@@ -77,10 +77,20 @@ Deno.serve(async (req: Request) => {
 
     // Get Resend API key from environment
     const resendApiKey = Deno.env.get('RESEND_API_KEY');
+    
+    // Debug logging - remove after setup is working
+    console.log('Environment check:', {
+      hasResendKey: !!resendApiKey,
+      keyLength: resendApiKey ? resendApiKey.length : 0,
+      availableEnvVars: Object.keys(Deno.env.toObject())
+    });
+    
     if (!resendApiKey) {
+      console.error('RESEND_API_KEY environment variable is missing');
       return new Response(
         JSON.stringify({ 
-          error: 'Email service is currently unavailable. Please contact us directly at contactus@protecsolutions.com.au or call +61 459 469 120'
+          error: 'Email service configuration error. Please contact us directly at contactus@protecsolutions.com.au or call +61 459 469 120',
+          debug: 'RESEND_API_KEY environment variable not found'
         }),
         {
           status: 500,
