@@ -109,7 +109,7 @@ const Hero = () => {
                   {counters.certifications}+
                 </div>
                 <div className="text-slate-600 font-medium text-xs sm:text-sm md:text-base leading-tight">
-                  Certifications
+                  Solutions
                 </div>
               </div>
               <div className="text-center p-3 sm:p-4 md:p-6 bg-white/80 backdrop-blur-sm rounded-xl md:rounded-2xl border border-slate-200/50 shadow-lg min-w-[90px] sm:min-w-[100px] flex-1 max-w-[110px] sm:max-w-[120px] md:max-w-none">
