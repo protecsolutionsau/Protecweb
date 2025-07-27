@@ -92,10 +92,12 @@ Deno.serve(async (req: Request) => {
     const resendApiKey = Deno.env.get('RESEND_API_KEY');
     if (!resendApiKey) {
       console.error('RESEND_API_KEY environment variable not set');
+      console.error('Available environment variables:', Object.keys(Deno.env.toObject()));
       return new Response(
         JSON.stringify({ 
           error: 'Email service not configured', 
-          message: 'Please contact us directly at contactus@protecsolutions.com.au' 
+          message: 'Email service not configured - missing RESEND_API_KEY environment variable',
+          debug: 'Please set RESEND_API_KEY in Supabase project settings'
         }),
         {
           status: 500,
@@ -104,7 +106,7 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    console.log('Initializing Resend with API key');
+    console.log('Initializing Resend with API key:', resendApiKey ? 'Present' : 'Missing');
     const resend = new Resend(resendApiKey);
 
     // Create HTML email body
