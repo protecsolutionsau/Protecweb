@@ -47,9 +47,14 @@ const Contact = () => {
     try {
       // Get Supabase URL from environment
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
       
-      if (!supabaseUrl) {
-        throw new Error('Website configuration error. Please contact us directly at contactus@protecsolutions.com.au');
+      if (!supabaseUrl || !supabaseAnonKey) {
+        console.error('Missing Supabase configuration:', { 
+          hasUrl: !!supabaseUrl, 
+          hasKey: !!supabaseAnonKey 
+        });
+        throw new Error('Email service is currently unavailable. Please contact us directly at contactus@protecsolutions.com.au or call +61 459 469 120');
       }
       
       const apiUrl = `${supabaseUrl}/functions/v1/send-contact-email`;
@@ -58,7 +63,7 @@ const Contact = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          'Authorization': `Bearer ${supabaseAnonKey}`,
         },
         body: JSON.stringify(formData),
       });
