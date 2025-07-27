@@ -37,35 +37,47 @@ const Contact = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!validateForm()) return;
-    
-    // Let Netlify handle the form submission
-    const form = e.target as HTMLFormElement;
-    
+
     setIsLoading(true);
     
-    fetch('/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams(new FormData(form) as any).toString(),
-    })
-      .then(() => {
-        setIsLoading(false);
-        setIsSubmitted(true);
-        
-        // Reset form after 3 seconds
-        setTimeout(() => {
-          setIsSubmitted(false);
-          setFormData({ name: '', email: '', organisation: '', message: '' });
-        }, 3000);
-      })
-      .catch(() => {
-        setIsLoading(false);
-        alert('There was an error submitting the form. Please try again.');
+    try {
+      // Get Supabase URL from environment
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const apiUrl = `${supabaseUrl}/functions/v1/send-contact-email`;
+
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify(formData),
       });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to send message');
+      }
+
+      setIsLoading(false);
+      setIsSubmitted(true);
+      
+      // Reset form after 3 seconds
+      setTimeout(() => {
+        setIsSubmitted(false);
+        setFormData({ name: '', email: '', organisation: '', message: '' });
+      }, 3000);
+
+    } catch (error) {
+      setIsLoading(false);
+      console.error('Contact form error:', error);
+      alert(`There was an error sending your message: ${error.message}. Please try again.`);
+    }
   };
 
   if (isSubmitted) {
@@ -98,15 +110,10 @@ const Contact = () => {
         </div>
         
         <form 
-          name="contact" 
-          method="POST" 
-          data-netlify="true"
           onSubmit={handleSubmit} 
           className="bg-white p-8 lg:p-10 rounded-2xl shadow-xl border border-slate-100 space-y-8 animate-fade-in-up" 
           style={{animationDelay: '0.4s'}}
         >
-          <input type="hidden" name="form-name" value="contact" />
-          
           <div className="grid md:grid-cols-2 gap-8">
             <div>
               <label htmlFor="name" className="block text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
