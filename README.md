@@ -1,5 +1,3 @@
-Here’s the clean copy-paste version for your GitHub README:
-
 # Protec Solutions Website
 
 A modern, responsive business website for Protec Solutions, built to showcase services, industry expertise, and contact capabilities.
