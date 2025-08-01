@@ -15,7 +15,7 @@ A modern, responsive business website for Protec Solutions, built to showcase se
 ---
 
 ## 🛠 Tech Stack
-- Frontend: HTML5, CSS3, JavaScript, React (if applicable)
+- Frontend: HTML5, CSS3, JavaScript, React 
 - Hosting: Netlify
 - Domain: protecsolutions.com.au
 - Email Service: Resend via Supabase Edge Functions
