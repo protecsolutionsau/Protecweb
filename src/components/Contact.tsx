@@ -1,16 +1,31 @@
 import React, { useState } from 'react';
-import { Send, CheckCircle, User, Mail, Building, MessageSquare } from 'lucide-react';
+import { Send, CheckCircle, User, Mail, Building, MessageSquare, Phone } from 'lucide-react';
+
+// Declare emailjs for TypeScript
+declare global {
+  interface Window {
+    emailjs: any;
+  }
+}
 
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    organisation: '',
-    message: ''
+    phone: '',
+    title: '',
+    description: ''
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+
+  // Initialize EmailJS when component mounts
+  React.useEffect(() => {
+    if (window.emailjs) {
+      window.emailjs.init('QNqujHtoH4C9CdpNP');
+    }
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -31,7 +46,7 @@ const Contact = () => {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email';
     }
-    if (!formData.message.trim()) newErrors.message = 'Message is required';
+    if (!formData.description.trim()) newErrors.description = 'Message is required';
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -45,42 +60,16 @@ const Contact = () => {
     setIsLoading(true);
     
     try {
-      // Get Supabase URL from environment
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-      
-      if (!supabaseUrl || !supabaseAnonKey) {
-        throw new Error('Email service is currently unavailable. Please contact us directly at contactus@protecsolutions.com.au or call +61 459 469 120');
-      }
-      
-      const apiUrl = `${supabaseUrl}/functions/v1/send-contact-email`;
-
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${supabaseAnonKey}`,
-        },
-        body: JSON.stringify(formData),
-      });
-
-      // Check if response has content before parsing JSON
-      let result;
-      const responseText = await response.text();
-      
-      if (responseText) {
-        try {
-          result = JSON.parse(responseText);
-        } catch (parseError) {
-          throw new Error('Server communication error. Please try again or contact us directly.');
-        }
-      } else {
-        throw new Error('No response from server. Please try again or contact us directly.');
+      if (!window.emailjs) {
+        throw new Error('EmailJS not loaded. Please refresh the page and try again.');
       }
 
-      if (!response.ok) {
-        throw new Error(result?.error || result?.message || `Server error (${response.status}). Please try again.`);
-      }
+      // Send email using EmailJS
+      await window.emailjs.sendForm(
+        'service_protec',
+        'template_n9ploky',
+        e.target
+      );
 
       setIsLoading(false);
       setIsSubmitted(true);
@@ -88,18 +77,15 @@ const Contact = () => {
       // Reset form after 4 seconds
       setTimeout(() => {
         setIsSubmitted(false);
-        setFormData({ name: '', email: '', organisation: '', message: '' });
+        setFormData({ name: '', email: '', phone: '', title: '', description: '' });
       }, 4000);
 
     } catch (error) {
       setIsLoading(false);
       
-      // More user-friendly error messages
-      let errorMessage = 'Unable to send message. Please try again or contact us directly at contactus@protecsolutions.com.au';
+      let errorMessage = 'Unable to send message. Please try again or contact us directly at contactus@protecsolutions.com.au or call +61 459 469 120';
       
-      if (error.message.includes('fetch')) {
-        errorMessage = 'Connection error. Please check your internet and try again.';
-      } else if (error.message) {
+      if (error.message) {
         errorMessage = error.message;
       }
       
@@ -185,40 +171,58 @@ const Contact = () => {
             </div>
           </div>
           
-          <div>
-            <label htmlFor="organisation" className="block text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
-              <Building className="w-4 h-4 text-primary-500" />
-              Organisation
-            </label>
-            <input
-              type="text"
-              id="organisation"
-              name="organisation"
-              value={formData.organisation}
-              onChange={handleChange}
-              className="w-full px-4 py-4 rounded-xl border-2 border-slate-200 focus:border-custom-blue focus:outline-none focus:shadow-[0_0_0_3px_rgba(51,102,255,0.1)] bg-slate-50 focus:bg-white transition-all duration-300"
-              placeholder="Your company or organisation"
-            />
+          <div className="grid md:grid-cols-2 gap-8">
+            <div>
+              <label htmlFor="phone" className="block text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+                <Phone className="w-4 h-4 text-primary-500" />
+                Phone
+              </label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                className="w-full px-4 py-4 rounded-xl border-2 border-slate-200 focus:border-custom-blue focus:outline-none focus:shadow-[0_0_0_3px_rgba(51,102,255,0.1)] bg-slate-50 focus:bg-white transition-all duration-300"
+                placeholder="+61 400 000 000"
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="title" className="block text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+                <Building className="w-4 h-4 text-primary-500" />
+                Organisation
+              </label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+                className="w-full px-4 py-4 rounded-xl border-2 border-slate-200 focus:border-custom-blue focus:outline-none focus:shadow-[0_0_0_3px_rgba(51,102,255,0.1)] bg-slate-50 focus:bg-white transition-all duration-300"
+                placeholder="Your company or organisation"
+              />
+            </div>
           </div>
           
           <div>
-            <label htmlFor="message" className="block text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+            <label htmlFor="description" className="block text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
               <MessageSquare className="w-4 h-4 text-primary-500" />
               Message *
             </label>
             <div className="relative">
               <textarea
-                id="message"
-                name="message"
+                id="description"
+                name="description"
                 rows={6}
-                value={formData.message}
+                value={formData.description}
                 onChange={handleChange}
                 className={`w-full px-4 py-4 rounded-xl border-2 transition-all duration-300 resize-none focus:outline-none ${
-                  errors.message ? 'border-red-300 focus:border-red-500 focus:shadow-[0_0_0_3px_rgba(239,68,68,0.1)]' : 'border-slate-200 focus:border-custom-blue focus:shadow-[0_0_0_3px_rgba(51,102,255,0.1)]'
+                  errors.description ? 'border-red-300 focus:border-red-500 focus:shadow-[0_0_0_3px_rgba(239,68,68,0.1)]' : 'border-slate-200 focus:border-custom-blue focus:shadow-[0_0_0_3px_rgba(51,102,255,0.1)]'
                 } bg-slate-50 focus:bg-white`}
                 placeholder="Tell us about your project, goals, and how we can help..."
               ></textarea>
-              {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message}</p>}
+              {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
             </div>
           </div>
           
